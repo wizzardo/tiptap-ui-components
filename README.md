@@ -6,7 +6,6 @@ This repo also includes a [CLI tool](https://tiptap.dev/docs/ui-components/getti
 
 Use the components as-is, customize them to match your design system, or drop them into an existing Tiptap setup. They're optional, composable, and built for dev speed.
 
-
 ## Getting Started
 
 Start with the [UI Components docs](https://tiptap.dev/docs/ui-components/getting-started/overview) to browse demos, setup guides, and usage patterns.
@@ -16,13 +15,13 @@ Start with the [UI Components docs](https://tiptap.dev/docs/ui-components/gettin
 Install with the Tiptap CLI to scaffold your setup:
 
 ```bash
-npx tiptap-cli init
+npx @tiptap/cli init
 ```
 
 Or install a single component:
 
 ```bash
-npx tiptap-cli add [component-name]
+npx @tiptap/cli add [component-name]
 ```
 
 ## Available Components
@@ -32,17 +31,18 @@ npx tiptap-cli add [component-name]
 Fully working editor setups, ready to clone and customize:
 
 [Simple Editor](https://tiptap.dev/docs/ui-components/templates/simple-editor) (MIT Licensed):
+
 - Responsive layout
 - Light/Dark mode support
 - Rich text formatting, image upload, link editing
 - Fully customizable
-
 
 ### Components
 
 The [components](https://tiptap.dev/docs/ui-components/components/overview) available in this public repository are MIT licensed and freely available:
 
 #### UI Components
+
 - Heading button / dropdown
 - Highlight popover
 - Image upload button
@@ -54,6 +54,7 @@ The [components](https://tiptap.dev/docs/ui-components/components/overview) avai
 - Undo redo button
 
 #### Node Components
+
 - Code block
 - Image
 - Image upload
@@ -61,11 +62,13 @@ The [components](https://tiptap.dev/docs/ui-components/components/overview) avai
 - Paragraph
 
 #### Primitives
+
 - Avatar, Badge, Button
 - Dropdown menu, Popover, Separator
 - Spacer, Toolbar, Tooltip
 
 ## Customization
+
 All components are designed with minimal, neutral styling to blend into your existing design system.
 
 No themes or complex overrides required. Edit the source directly to match your brand or component system.
