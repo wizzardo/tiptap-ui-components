@@ -163,7 +163,10 @@ export async function runInit(options: InitOptions) {
       process.exit(0)
     }
 
-    selectedComponents = await promptForRegistryComponents(updatedOptions)
+    selectedComponents = await promptForRegistryComponents({
+      ...updatedOptions,
+      overwrite: false,
+    })
 
     // Exit if still no components selected
     if (!selectedComponents.length) {
@@ -175,8 +178,7 @@ export async function runInit(options: InitOptions) {
   // Add components
   const fullConfig = await resolveConfigPaths(updatedOptions.cwd, config)
   await addComponents(selectedComponents, fullConfig, {
-    // Init will always overwrite files.
-    overwrite: true,
+    overwrite: false,
     silent,
     isNewProject:
       updatedOptions.isNewProject || projectInfo?.framework.name === "next-app",
