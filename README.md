@@ -40,7 +40,7 @@ Fully working editor setups, ready to clone and customize:
 
 ### Components
 
-The [components](https://tiptap.dev/ui-components/components/overview) available in this public repository are MIT licensed and freely available:
+The [components](https://tiptap.dev/docs/ui-components/components/overview) available in this public repository are MIT licensed and freely available:
 
 #### UI Components
 - Heading button / dropdown
