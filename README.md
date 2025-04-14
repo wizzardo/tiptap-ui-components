@@ -1,25 +1,25 @@
 # Tiptap UI Components
 
-This repository contains a collection of [UI Components](https://tiptap.dev/docs/ui-components/components/overview), [templates](https://tiptap.dev/docs/ui-components/templates/simple-editor), and [primitives](https://tiptap.dev/docs/ui-components/primitives) designed specifically for integration with Tiptap, a headless and modular rich text editor.
+Tiptap UI Components is a library of modular, MIT-licensed [React components](https://tiptap.dev/docs/ui-components/components/overview), [templates](https://tiptap.dev/docs/ui-components/templates/simple-editor), and [primitives](https://tiptap.dev/docs/ui-components/primitives) that help you build rich text editor UIs faster, on top of the headless [Tiptap](https://tiptap.dev) framework.
 
-It also includes a [CLI](https://tiptap.dev/docs/ui-components/getting-started/cli) tool to quickly install any component from the UI Components library.
+This repo also includes a [CLI tool](https://tiptap.dev/docs/ui-components/getting-started/cli) to scaffold your editor setup or install individual components with zero config.
 
-UI Components and Templates help you create a rich text editor from scratch by providing prebuilt and customizable UI elements.
+Use the components as-is, customize them to match your design system, or drop them into an existing Tiptap setup. They're optional, composable, and built for dev speed.
 
 
 ## Getting Started
 
-Head over to the [UI Components](https://tiptap.dev/docs/ui-components/getting-started/overview) documentation to see demos and instructions.
+Start with the [UI Components docs](https://tiptap.dev/docs/ui-components/getting-started/overview) to browse demos, setup guides, and usage patterns.
 
 ### Installation
 
-Use the Tiptap CLI to quickly scaffold your editor setup:
+Install with the Tiptap CLI to scaffold your setup:
 
 ```bash
 npx tiptap-cli init
 ```
 
-Or add individual components directly:
+Or install a single component:
 
 ```bash
 npx tiptap-cli add [component-name]
@@ -29,39 +29,47 @@ npx tiptap-cli add [component-name]
 
 ### Templates
 
-Templates provide fully working editor setups, including all essential components and features:
+Fully working editor setups, ready to clone and customize:
 
-[Simple Editor](https://tiptap.dev/docs/ui-components/templates/simple-editor) (Open Source):
-- Responsive, supports dark/light modes
+[Simple Editor](https://tiptap.dev/docs/ui-components/templates/simple-editor) (MIT Licensed):
+- Responsive layout
+- Light/Dark mode support
 - Rich text formatting, image upload, link editing
-- MIT licensed, fully customizable
+- Fully customizable
 
 
-### Open Source Components
+### Components
 
 The [components](https://tiptap.dev/ui-components/components/overview) available in this public repository are MIT licensed and freely available:
 
-#### UI Components:
-- Heading button/dropdown
+#### UI Components
+- Heading button / dropdown
 - Highlight popover
 - Image upload button
 - Link popover
-- List button/dropdown
+- List button / dropdown
 - Mark button
 - Node button
 - Text align button
 - Undo redo button
 
-#### Node Components:
-- Code block node
-- Image node/upload node
-- List node
-- Paragraph node
+#### Node Components
+- Code block
+- Image
+- Image upload
+- List
+- Paragraph
 
-#### Primitives:
+#### Primitives
 - Avatar, Badge, Button
 - Dropdown menu, Popover, Separator
 - Spacer, Toolbar, Tooltip
 
 ## Customization
-All UI components and primitives have minimal, neutral styling, designed to blend into your application's theme without complicated overrides. Customize directly by editing the source code.
+All components are designed with minimal, neutral styling to blend into your existing design system.
+
+No themes or complex overrides required. Edit the source directly to match your brand or component system.
+
+---
+
+Want to contribute, suggest a component, or report a bug? [Open an issue](https://github.com/ueberdosis/tiptap-ui-components/issues) or join the discussion in [Discord](https://tiptap.dev/discord).
