@@ -110,7 +110,7 @@
       "content": [
         {
           "type": "text",
-          "text": "npx tiptap-cli init"
+          "text": "npx @tiptap/cli init"
         }
       ]
     },
