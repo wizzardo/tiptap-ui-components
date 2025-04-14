@@ -19,6 +19,7 @@ export const addOptionsSchema = z.object({
   cwd: z.string(),
   path: z.string().optional(),
   silent: z.boolean(),
+  overwrite: z.boolean(),
 })
 
 type AddOptions = z.infer<typeof addOptionsSchema>
@@ -346,6 +347,7 @@ export const add = new Command()
   .name("add")
   .description("add Tiptap components and templates to your project")
   .argument("[components...]", "the components to add")
+  .option("-o, --overwrite", "overwrite existing files.", false)
   .option(
     "-c, --cwd <cwd>",
     "the working directory. defaults to the current directory.",
