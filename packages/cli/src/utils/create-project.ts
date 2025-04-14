@@ -241,7 +241,6 @@ async function createNextProject(
 
     createSpinner.stopAndPersist({
       symbol: colors.cyan("✔"),
-      text: colors.white(`Creating a new Next.js project.`),
     })
   } catch (error) {
     createSpinner?.fail("Something went wrong creating a new Next.js project.")
@@ -289,7 +288,6 @@ async function createViteProject(
 
     createSpinner.stopAndPersist({
       symbol: colors.cyan("✔"),
-      text: colors.white(`Creating a new Vite + React + TypeScript project.`),
     })
   } catch (error) {
     createSpinner?.fail("Something went wrong creating a new Vite project.")
