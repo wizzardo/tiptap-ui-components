@@ -384,7 +384,10 @@ async function createMonorepoProject(
     // Initialize git repository
     await initializeGitRepository(projectPath)
 
-    createSpinner?.succeed("Creating a new Next.js monorepo.")
+    createSpinner?.stopAndPersist({
+      symbol: colors.cyan("✔"),
+      text: `Created a new Next.js monorepo at ${highlighter.info(projectPath)}`,
+    })
   } catch (error) {
     createSpinner?.fail("Something went wrong creating a new Next.js monorepo.")
     handleError(error)
