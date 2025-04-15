@@ -14,6 +14,7 @@ import { HttpsProxyAgent } from "https-proxy-agent"
 import fetch from "node-fetch"
 import { z } from "zod"
 import { getProjectInfo } from "@/src/utils/get-project-info"
+import { Framework, FRAMEWORKS } from "@/src/utils/frameworks"
 
 const REGISTRY_URL = process.env.REGISTRY_URL || "https://template.tiptap.dev"
 
@@ -155,7 +156,7 @@ export async function registryResolveItemsTree(
     }
 
     const projectInfo = await getProjectInfo(config.resolvedPaths.cwd)
-    const framework = projectInfo?.framework.name
+    const framework = projectInfo?.framework.name as Framework["name"]
 
     const allDependencies = deepmerge.all(
       payload.map((item) => item.dependencies ?? [])
@@ -312,9 +313,8 @@ export function getRegistryParentMap(
  */
 function filterDevDependenciesByFramework(
   devDependencies: unknown,
-  framework: string | undefined
+  framework: Framework["name"]
 ): string[] {
-  // Ensure we have a proper string array
   const depsArray = Array.isArray(devDependencies) ? devDependencies : []
 
   if (!depsArray.length) {
@@ -323,23 +323,39 @@ function filterDevDependenciesByFramework(
 
   const stringDeps = depsArray.map((dep) => String(dep))
 
-  const hasSass = stringDeps.includes("sass")
-  const hasSassEmbedded = stringDeps.includes("sass-embedded")
+  if (framework) {
+    const hasSass = stringDeps.includes("sass")
+    const hasSassEmbedded = stringDeps.includes("sass-embedded")
 
-  if (hasSass && hasSassEmbedded) {
-    let filteredDeps = [...stringDeps]
+    if (hasSass && hasSassEmbedded) {
+      let filteredDeps = [...stringDeps]
 
-    if (framework) {
-      if (framework === "vite") {
-        // Vite prefers sass-embedded
+      const prefersEmbedded: Framework["name"][] = [
+        FRAMEWORKS.astro.name,
+        FRAMEWORKS.laravel.name,
+        FRAMEWORKS.vite.name,
+        FRAMEWORKS.remix.name,
+        FRAMEWORKS["tanstack-start"].name,
+        FRAMEWORKS["react-router"].name,
+      ]
+
+      const prefersRegular: Framework["name"][] = [
+        FRAMEWORKS["next-app"].name,
+        FRAMEWORKS["next-pages"].name,
+        FRAMEWORKS.gatsby.name,
+      ]
+
+      if (prefersEmbedded.includes(framework)) {
+        // These frameworks prefer sass-embedded
         filteredDeps = filteredDeps.filter((dep) => dep !== "sass")
-      } else if (framework === "next-app" || framework === "next-pages") {
-        // Next.js prefers sass
+      } else if (prefersRegular.includes(framework)) {
+        // These frameworks prefer regular sass
         filteredDeps = filteredDeps.filter((dep) => dep !== "sass-embedded")
       }
-    }
 
-    return filteredDeps
+      // Default to regular sass if no preference is found
+      return filteredDeps.filter((dep) => dep !== "sass-embedded")
+    }
   }
 
   return stringDeps
