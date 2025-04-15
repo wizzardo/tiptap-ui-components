@@ -7,6 +7,7 @@ import { HttpsProxyAgent } from "https-proxy-agent"
 import { logger } from "@/src/utils/logger"
 import { spinner } from "@/src/utils/spinner"
 import yaml from "yaml"
+import { colors } from "@/src/utils/colors"
 
 const REGISTRY_URL = process.env.REGISTRY_URL || "https://template.tiptap.dev"
 const AUTH_API_URL = `${REGISTRY_URL}/api/auth`
@@ -68,7 +69,10 @@ export async function authenticateUser({
       }
     }
 
-    loginSpinner?.succeed("Authentication successful")
+    loginSpinner?.stopAndPersist({
+      symbol: colors.cyan("✔"),
+      text: "Authentication successful",
+    })
     return { success: true, token }
   } catch (error) {
     loginSpinner?.fail("Authentication failed")

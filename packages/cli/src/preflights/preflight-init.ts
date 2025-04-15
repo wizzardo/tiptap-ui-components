@@ -7,6 +7,7 @@ import { logger } from "@/src/utils/logger"
 import { spinner } from "@/src/utils/spinner"
 import fs from "fs-extra"
 import { z } from "zod"
+import { colors } from "@/src/utils/colors"
 
 export async function preFlightInit(
   options: z.infer<typeof initOptionsSchema>
@@ -47,11 +48,12 @@ export async function preFlightInit(
     logger.break()
     process.exit(0)
   }
-  frameworkSpinner?.succeed(
-    `Verifying framework. Found ${highlighter.info(
+  frameworkSpinner?.stopAndPersist({
+    symbol: colors.cyan("✔"),
+    text: `Verifying framework. Found ${highlighter.info(
       projectInfo.framework.label
-    )}.`
-  )
+    )}.`,
+  })
 
   const tsConfigSpinner = spinner(`Validating import alias.`, {
     silent: options.silent,
@@ -60,7 +62,9 @@ export async function preFlightInit(
     errors[ERRORS.IMPORT_ALIAS_MISSING] = true
     tsConfigSpinner?.fail()
   } else {
-    tsConfigSpinner?.succeed()
+    tsConfigSpinner?.stopAndPersist({
+      symbol: colors.cyan("✔"),
+    })
   }
 
   if (Object.keys(errors).length > 0) {

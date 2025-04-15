@@ -16,6 +16,7 @@ import { transformEnvVars } from "@/src/utils/transformers/transform-env-vars"
 import { z } from "zod"
 import { confirm } from "@inquirer/prompts"
 import chalk from "chalk"
+import { colors } from "@/src/utils/colors"
 
 export async function updateFiles(
   files: RegistryItem["files"],
@@ -154,11 +155,12 @@ export async function updateFiles(
   }
 
   if (filesCreated.length) {
-    filesCreatedSpinner?.succeed(
-      `Created ${filesCreated.length} ${
+    filesCreatedSpinner?.stopAndPersist({
+      symbol: colors.cyan("✔"),
+      text: `Created ${filesCreated.length} ${
         filesCreated.length === 1 ? "file" : "files"
-      }:`
-    )
+      }:`,
+    })
     if (!options.silent) {
       for (const file of filesCreated) {
         logger.log(`  - ${file}`)
