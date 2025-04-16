@@ -253,9 +253,7 @@ async function createViteProject(
   options: CreateViteOptions
 ) {
   const createSpinner = spinner(
-    chalk.bold(
-      `Creating a new Vite + React + TypeScript project. This may take a few minutes.`
-    )
+    `Creating a new Vite + React + TypeScript project. This may take a few minutes.`
   ).start()
 
   try {
@@ -381,7 +379,9 @@ async function createMonorepoProject(
 
     createSpinner?.stopAndPersist({
       symbol: colors.cyan("✔"),
-      text: `Created a new Next.js monorepo at ${colors.blue(projectPath)}`,
+      text: chalk.bold(
+        `Created a new Next.js monorepo at ${colors.blue(projectPath)}`
+      ),
     })
   } catch (error) {
     createSpinner?.fail("Something went wrong creating a new Next.js monorepo.")

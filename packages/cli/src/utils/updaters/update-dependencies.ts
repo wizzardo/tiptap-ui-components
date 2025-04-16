@@ -4,7 +4,6 @@ import { RegistryItem } from "@/src/utils/registry/schema"
 import { spinner } from "@/src/utils/spinner"
 import { execa } from "execa"
 import { colors } from "@/src/utils/colors"
-import chalk from "chalk"
 
 export async function updateDependencies(
   dependencies: RegistryItem["dependencies"],
@@ -23,7 +22,7 @@ export async function updateDependencies(
     ...options,
   }
 
-  const dependenciesSpinner = spinner(chalk.bold(`Installing dependencies.`), {
+  const dependenciesSpinner = spinner(`Installing dependencies.`, {
     silent: options.silent,
   }).start()
   const packageManager = await getPackageManager(config.resolvedPaths.cwd)

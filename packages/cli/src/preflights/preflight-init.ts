@@ -7,6 +7,7 @@ import { spinner } from "@/src/utils/spinner"
 import fs from "fs-extra"
 import { z } from "zod"
 import { colors } from "@/src/utils/colors"
+import chalk from "chalk"
 
 export async function preFlightInit(
   options: z.infer<typeof initOptionsSchema>
@@ -49,9 +50,9 @@ export async function preFlightInit(
   }
   frameworkSpinner?.stopAndPersist({
     symbol: colors.cyan("✔"),
-    text: `Verifying framework. Found ${colors.blue(
-      projectInfo.framework.label
-    )}.`,
+    text: chalk.bold(
+      `Verifying framework. Found ${colors.blue(projectInfo.framework.label)}.`
+    ),
   })
 
   const tsConfigSpinner = spinner(`Validating import alias.`, {
