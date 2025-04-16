@@ -1,6 +1,5 @@
 import { Config, configSchema } from "@/src/utils/get-config"
 import { handleError } from "@/src/utils/handle-error"
-import { highlighter } from "@/src/utils/highlighter"
 import { logger } from "@/src/utils/logger"
 import {
   registryIndexSchema,
@@ -15,6 +14,7 @@ import fetch from "node-fetch"
 import { z } from "zod"
 import { getProjectInfo } from "@/src/utils/get-project-info"
 import { Framework, FRAMEWORKS } from "@/src/utils/frameworks"
+import { colors } from "@/src/utils/colors"
 
 const REGISTRY_URL = process.env.REGISTRY_URL || "https://template.tiptap.dev"
 
@@ -42,7 +42,7 @@ export async function fetchFreeRegistry() {
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch from ${highlighter.info(url)}.\n${response.statusText}`
+        `Failed to fetch from ${colors.blue(url)}.\n${response.statusText}`
       )
     }
 
@@ -88,7 +88,7 @@ export async function fetchRegistry(paths: string[], config?: Config) {
 
           if (response.status === 401) {
             throw new Error(
-              `You are not authorized to access the component at ${highlighter.info(
+              `You are not authorized to access the component at ${colors.blue(
                 url
               )}.\nPlease run 'tiptap auth login' to authenticate with the registry, or make sure your token is valid.`
             )
@@ -96,7 +96,7 @@ export async function fetchRegistry(paths: string[], config?: Config) {
 
           if (response.status === 404) {
             throw new Error(
-              `The component at ${highlighter.info(
+              `The component at ${colors.blue(
                 url
               )} was not found.\nIt may not exist at the registry. Please make sure it is a valid component.`
             )
@@ -104,7 +104,7 @@ export async function fetchRegistry(paths: string[], config?: Config) {
 
           if (response.status === 403) {
             throw new Error(
-              `You do not have access to the component at ${highlighter.info(
+              `You do not have access to the component at ${colors.blue(
                 url
               )}.\nYour account may not have the required subscription plan for this component.\nPlease upgrade your subscription or use a component available in your current plan.`
             )
@@ -116,7 +116,7 @@ export async function fetchRegistry(paths: string[], config?: Config) {
               ? result.error
               : response.statusText || errorMessages[response.status]
           throw new Error(
-            `Failed to fetch from ${highlighter.info(url)}.\n${message}`
+            `Failed to fetch from ${colors.blue(url)}.\n${message}`
           )
         }
 

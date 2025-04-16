@@ -2,7 +2,6 @@ import { existsSync, promises as fs } from "fs"
 import path, { basename } from "path"
 import { Config } from "@/src/utils/get-config"
 import { getProjectInfo, ProjectInfo } from "@/src/utils/get-project-info"
-import { highlighter } from "@/src/utils/highlighter"
 import { logger } from "@/src/utils/logger"
 import {
   RegistryItem,
@@ -112,7 +111,7 @@ export async function updateFiles(
 
       const overwrite = await confirm({
         message: chalk.white(
-          `The file ${highlighter.info(
+          `The file ${colors.blue(
             fileName
           )} already exists. Would you like to overwrite?`
         ),
@@ -156,9 +155,11 @@ export async function updateFiles(
   if (filesCreated.length) {
     filesCreatedSpinner?.stopAndPersist({
       symbol: colors.cyan("✔"),
-      text: `Created ${filesCreated.length} ${
-        filesCreated.length === 1 ? "file" : "files"
-      }:`,
+      text: chalk.bold(
+        `Created ${filesCreated.length} ${
+          filesCreated.length === 1 ? "file" : "files"
+        }:`
+      ),
     })
     if (!options.silent) {
       for (const file of filesCreated) {

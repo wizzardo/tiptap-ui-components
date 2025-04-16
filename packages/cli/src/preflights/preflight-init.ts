@@ -2,7 +2,6 @@ import path from "path"
 import { initOptionsSchema } from "@/src/commands/init"
 import * as ERRORS from "@/src/utils/errors"
 import { getProjectInfo } from "@/src/utils/get-project-info"
-import { highlighter } from "@/src/utils/highlighter"
 import { logger } from "@/src/utils/logger"
 import { spinner } from "@/src/utils/spinner"
 import fs from "fs-extra"
@@ -37,10 +36,10 @@ export async function preFlightInit(
     logger.break()
     if (projectInfo?.framework.links.installation) {
       logger.error(
-        `We could not detect a supported framework at ${highlighter.info(
+        `We could not detect a supported framework at ${colors.blue(
           options.cwd
         )}.\n` +
-          `Visit ${highlighter.info(
+          `Visit ${colors.blue(
             projectInfo?.framework.links.installation
           )} to manually configure your project.\nOnce configured, you can use the cli to add components.`
       )
@@ -50,7 +49,7 @@ export async function preFlightInit(
   }
   frameworkSpinner?.stopAndPersist({
     symbol: colors.cyan("✔"),
-    text: `Verifying framework. Found ${highlighter.info(
+    text: `Verifying framework. Found ${colors.blue(
       projectInfo.framework.label
     )}.`,
   })
@@ -73,7 +72,7 @@ export async function preFlightInit(
       logger.error(`No import alias found in your tsconfig.json file.`)
       if (projectInfo?.framework.links.installation) {
         logger.error(
-          `Visit ${highlighter.info(
+          `Visit ${colors.blue(
             projectInfo?.framework.links.installation
           )} to learn how to set an import alias.`
         )

@@ -23,6 +23,7 @@ import { updateFiles } from "@/src/utils/updaters/update-files"
 import { z } from "zod"
 import { colors } from "@/src/utils/colors"
 import { updateDevDependencies } from "@/src/utils/updaters/update-dev-dependencies"
+import chalk from "chalk"
 
 export async function addComponents(
   components: string[],
@@ -64,7 +65,7 @@ async function addProjectComponents(
     isNewProject?: boolean
   }
 ) {
-  const registrySpinner = spinner(`Checking registry.`, {
+  const registrySpinner = spinner(chalk.bold(`Checking registry.`), {
     silent: options.silent,
   }).start()
   const tree = await registryResolveItemsTree(components, config)
@@ -101,7 +102,7 @@ async function addWorkspaceComponents(
     isNewProject?: boolean
   }
 ) {
-  const registrySpinner = spinner(`Checking registry.`, {
+  const registrySpinner = spinner(chalk.bold(`Checking registry.`), {
     silent: options.silent,
   }).start()
   const registryItems = await resolveRegistryItems(components, config)
