@@ -75,6 +75,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/prompts": "^2.4.9",
     "tsup": "^8.4.0",
-    "type-fest": "^4.39.1"
+    "type-fest": "^4.40.0"
   }
 }
