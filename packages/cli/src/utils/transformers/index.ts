@@ -33,6 +33,14 @@ export async function transform(
   opts: TransformOpts,
   transformers: Transformer[] = [transformImport, transformRsc]
 ) {
+  if (
+    opts.filename.endsWith(".scss") ||
+    opts.filename.endsWith(".css") ||
+    opts.filename.endsWith(".json")
+  ) {
+    return opts.raw
+  }
+
   const tempFile = await createTempSourceFile(opts.filename)
   const sourceFile = project.createSourceFile(tempFile, opts.raw, {
     scriptKind: ScriptKind.TSX,
