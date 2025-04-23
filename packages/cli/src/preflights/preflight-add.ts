@@ -33,15 +33,10 @@ export async function preFlightAdd(options: z.infer<typeof addOptionsSchema>) {
 
     logger.break()
     logger.error(
-      `An invalid ${colors.blue(
-        "components.json"
-      )} file was found at ${colors.blue(
-        options.cwd
-      )}.\nBefore you can add components, you must create a valid ${colors.blue(
-        "components.json"
-      )} file by running the ${colors.blue("init")} command.`
+      `Make sure you are in a valid project directory. Run ${colors.cyan(
+        "npx @tiptap/cli init"
+      )} to create a new project.`
     )
-    logger.error(`Learn more at ${colors.blue("link-here")}.`)
     logger.break()
     process.exit(0)
   }
