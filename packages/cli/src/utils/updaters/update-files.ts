@@ -26,191 +26,276 @@ export async function updateFiles(
     rootSpinner?: ReturnType<typeof spinner>
   }
 ) {
-  if (!files?.length) {
-    return {
-      filesCreated: [],
-      filesUpdated: [],
-      filesSkipped: [],
-    }
+  const result = {
+    filesCreated: [] as string[],
+    filesUpdated: [] as string[],
+    filesSkipped: [] as string[],
+    errors: [] as { file: string; error: string }[],
   }
+
+  if (!files?.length) {
+    return result
+  }
+
   options = {
     overwrite: false,
     force: false,
     silent: false,
     ...options,
   }
+
   const filesCreatedSpinner = spinner(`Updating files.`, {
     silent: options.silent,
   })?.start()
 
-  const [projectInfo] = await Promise.all([
-    getProjectInfo(config.resolvedPaths.cwd),
-  ])
+  try {
+    const [projectInfo] = await Promise.all([
+      getProjectInfo(config.resolvedPaths.cwd),
+    ])
 
-  const filesCreated = []
-  const filesUpdated = []
-  const filesSkipped = []
-
-  for (const file of files) {
-    if (!file.content) {
-      continue
-    }
-
-    let filePath = resolveFilePath(file, config, {
-      isSrcDir: projectInfo?.isSrcDir,
-      framework: projectInfo?.framework.name,
-      commonRoot: findCommonRoot(
-        files.map((f) => f.path),
-        file.path
-      ),
-    })
-
-    if (!filePath) {
-      continue
-    }
-
-    const fileName = basename(file.path)
-    const targetDir = path.dirname(filePath)
-
-    if (!config.tsx) {
-      filePath = filePath.replace(/\.tsx?$/, (match) =>
-        match === ".tsx" ? ".jsx" : ".js"
-      )
-    }
-
-    const existingFile = existsSync(filePath)
-
-    // Run our transformers.
-    const content = await transform(
-      {
-        filename: file.path,
-        raw: file.content,
-        config,
-        transformJsx: !config.tsx,
-      },
-      [transformImport, transformRsc]
-    )
-
-    if (existingFile) {
-      const existingFileContent = await fs.readFile(filePath, "utf-8")
-      const [normalizedExisting, normalizedNew] = await Promise.all([
-        getNormalizedFileContent(existingFileContent),
-        getNormalizedFileContent(content),
-      ])
-      if (normalizedExisting === normalizedNew) {
-        filesSkipped.push(path.relative(config.resolvedPaths.cwd, filePath))
-        continue
-      }
-    }
-
-    if (existingFile && !options.overwrite) {
-      filesCreatedSpinner.stop()
-      if (options.rootSpinner) {
-        options.rootSpinner.stop()
-      }
-
-      const overwrite = await confirm({
-        message: chalk.white(
-          `The file ${colors.blue(
-            fileName
-          )} already exists. Would you like to overwrite?`
-        ),
-        theme: {
-          prefix: chalk.hex("#46caff")("?"),
-          style: {
-            answer: (text: string) => chalk.white(text),
-          },
-        },
-      })
-
-      if (!overwrite) {
-        filesSkipped.push(path.relative(config.resolvedPaths.cwd, filePath))
-        if (options.rootSpinner) {
-          options.rootSpinner.start()
+    for (const file of files) {
+      try {
+        if (!file.content) {
+          continue
         }
-        continue
+
+        let filePath: string | undefined
+        try {
+          filePath = resolveFilePath(file, config, {
+            isSrcDir: projectInfo?.isSrcDir,
+            framework: projectInfo?.framework.name,
+            commonRoot: findCommonRoot(
+              files.map((f) => f.path),
+              file.path
+            ),
+          })
+        } catch (error) {
+          result.errors.push({
+            file: file.path,
+            error: `Failed to resolve file path: ${error instanceof Error ? error.message : String(error)}`,
+          })
+          continue
+        }
+
+        if (!filePath) {
+          continue
+        }
+
+        const fileName = basename(file.path)
+        const targetDir = path.dirname(filePath)
+
+        if (!config.tsx) {
+          filePath = filePath.replace(/\.tsx?$/, (match) =>
+            match === ".tsx" ? ".jsx" : ".js"
+          )
+        }
+
+        let existingFile = false
+        try {
+          existingFile = existsSync(filePath)
+        } catch (error) {
+          result.errors.push({
+            file: filePath,
+            error: `Failed to check if file exists: ${error instanceof Error ? error.message : String(error)}`,
+          })
+          continue
+        }
+
+        let content: string
+        try {
+          content = await transform(
+            {
+              filename: file.path,
+              raw: file.content,
+              config,
+              transformJsx: !config.tsx,
+            },
+            [transformImport, transformRsc]
+          )
+        } catch (error) {
+          result.errors.push({
+            file: filePath,
+            error: `Failed to transform content: ${error instanceof Error ? error.message : String(error)}`,
+          })
+          continue
+        }
+
+        if (existingFile) {
+          try {
+            const existingFileContent = await fs.readFile(filePath, "utf-8")
+            const [normalizedExisting, normalizedNew] = await Promise.all([
+              getNormalizedFileContent(existingFileContent),
+              getNormalizedFileContent(content),
+            ])
+            if (normalizedExisting === normalizedNew) {
+              result.filesSkipped.push(
+                path.relative(config.resolvedPaths.cwd, filePath)
+              )
+              continue
+            }
+          } catch (error) {
+            result.errors.push({
+              file: filePath,
+              error: `Failed to read or normalize existing file: ${error instanceof Error ? error.message : String(error)}`,
+            })
+            continue
+          }
+        }
+
+        if (existingFile && !options.overwrite) {
+          filesCreatedSpinner?.stop()
+          if (options.rootSpinner) {
+            options.rootSpinner?.stop()
+          }
+
+          try {
+            const overwrite = await confirm({
+              message: chalk.white(
+                `The file ${colors.blue(
+                  fileName
+                )} already exists. Would you like to overwrite?`
+              ),
+              theme: {
+                prefix: chalk.hex("#46caff")("?"),
+                style: {
+                  answer: (text: string) => chalk.white(text),
+                },
+              },
+            })
+
+            if (!overwrite) {
+              result.filesSkipped.push(
+                path.relative(config.resolvedPaths.cwd, filePath)
+              )
+              if (options.rootSpinner) {
+                options.rootSpinner.start()
+              }
+              continue
+            }
+          } catch (error) {
+            result.errors.push({
+              file: filePath,
+              error: `Failed to get user confirmation: ${error instanceof Error ? error.message : String(error)}`,
+            })
+            continue
+          } finally {
+            filesCreatedSpinner?.start()
+            if (options.rootSpinner) {
+              options.rootSpinner.start()
+            }
+          }
+        }
+
+        try {
+          if (!existsSync(targetDir)) {
+            await fs.mkdir(targetDir, { recursive: true })
+          }
+
+          await fs.writeFile(filePath, content, "utf-8")
+
+          existingFile
+            ? result.filesUpdated.push(
+                path.relative(config.resolvedPaths.cwd, filePath)
+              )
+            : result.filesCreated.push(
+                path.relative(config.resolvedPaths.cwd, filePath)
+              )
+        } catch (error) {
+          result.errors.push({
+            file: filePath,
+            error: `Failed to write file: ${error instanceof Error ? error.message : String(error)}`,
+          })
+        }
+      } catch (error) {
+        result.errors.push({
+          file: file.path || "unknown",
+          error: `Unexpected error processing file: ${error instanceof Error ? error.message : String(error)}`,
+        })
       }
-      filesCreatedSpinner?.start()
-      if (options.rootSpinner) {
-        options.rootSpinner.start()
+    }
+  } catch (error) {
+    logger.error(
+      `An error occurred while updating files: ${error instanceof Error ? error.message : String(error)}`
+    )
+  } finally {
+    const hasUpdatedFiles =
+      result.filesCreated.length || result.filesUpdated.length
+    if (!hasUpdatedFiles && !result.filesSkipped.length) {
+      filesCreatedSpinner?.info("No files updated.")
+    }
+
+    if (result.filesCreated.length) {
+      filesCreatedSpinner?.stopAndPersist({
+        symbol: colors.cyan("✔"),
+        text: chalk.bold(
+          `Created ${result.filesCreated.length} ${
+            result.filesCreated.length === 1 ? "file" : "files"
+          }:`
+        ),
+      })
+      if (!options.silent) {
+        for (const file of result.filesCreated) {
+          logger.log(`  - ${file}`)
+        }
+      }
+    } else {
+      filesCreatedSpinner?.stop()
+    }
+
+    if (result.filesUpdated.length) {
+      spinner(
+        `Updated ${result.filesUpdated.length} ${
+          result.filesUpdated.length === 1 ? "file" : "files"
+        }:`,
+        {
+          silent: options.silent,
+        }
+      )?.info()
+      if (!options.silent) {
+        for (const file of result.filesUpdated) {
+          logger.log(`  - ${file}`)
+        }
       }
     }
 
-    // Create the target directory if it doesn't exist.
-    if (!existsSync(targetDir)) {
-      await fs.mkdir(targetDir, { recursive: true })
+    if (result.filesSkipped.length) {
+      spinner(
+        `Skipped ${result.filesSkipped.length} ${
+          result.filesUpdated.length === 1 ? "file" : "files"
+        }: (use --overwrite to overwrite)`,
+        {
+          silent: options.silent,
+        }
+      )?.info()
+      if (!options.silent) {
+        for (const file of result.filesSkipped) {
+          logger.log(`  - ${file}`)
+        }
+      }
     }
 
-    await fs.writeFile(filePath, content, "utf-8")
-    existingFile
-      ? filesUpdated.push(path.relative(config.resolvedPaths.cwd, filePath))
-      : filesCreated.push(path.relative(config.resolvedPaths.cwd, filePath))
-  }
+    if (result.errors.length) {
+      spinner(
+        `Failed to process ${result.errors.length} ${
+          result.errors.length === 1 ? "file" : "files"
+        }:`,
+        {
+          silent: options.silent,
+        }
+      )?.fail()
+      if (!options.silent) {
+        for (const { file, error } of result.errors) {
+          logger.error(`  - ${file}: ${error}`)
+        }
+      }
+    }
 
-  const hasUpdatedFiles = filesCreated.length || filesUpdated.length
-  if (!hasUpdatedFiles && !filesSkipped.length) {
-    filesCreatedSpinner?.info("No files updated.")
-  }
-
-  if (filesCreated.length) {
-    filesCreatedSpinner?.stopAndPersist({
-      symbol: colors.cyan("✔"),
-      text: chalk.bold(
-        `Created ${filesCreated.length} ${
-          filesCreated.length === 1 ? "file" : "files"
-        }:`
-      ),
-    })
     if (!options.silent) {
-      for (const file of filesCreated) {
-        logger.log(`  - ${file}`)
-      }
-    }
-  } else {
-    filesCreatedSpinner?.stop()
-  }
-
-  if (filesUpdated.length) {
-    spinner(
-      `Updated ${filesUpdated.length} ${
-        filesUpdated.length === 1 ? "file" : "files"
-      }:`,
-      {
-        silent: options.silent,
-      }
-    )?.info()
-    if (!options.silent) {
-      for (const file of filesUpdated) {
-        logger.log(`  - ${file}`)
-      }
+      logger.break()
     }
   }
 
-  if (filesSkipped.length) {
-    spinner(
-      `Skipped ${filesSkipped.length} ${
-        filesUpdated.length === 1 ? "file" : "files"
-      }: (use --overwrite to overwrite)`,
-      {
-        silent: options.silent,
-      }
-    )?.info()
-    if (!options.silent) {
-      for (const file of filesSkipped) {
-        logger.log(`  - ${file}`)
-      }
-    }
-  }
-
-  if (!options.silent) {
-    logger.break()
-  }
-
-  return {
-    filesCreated,
-    filesUpdated,
-    filesSkipped,
-  }
+  return result
 }
 
 export function resolveFileTargetDirectory(
