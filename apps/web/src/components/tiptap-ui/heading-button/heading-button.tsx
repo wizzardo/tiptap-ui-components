@@ -16,7 +16,8 @@ import { HeadingSixIcon } from "@/components/tiptap-icons/heading-six-icon"
 import { isNodeInSchema } from "@/lib/tiptap-utils"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 
 export type Level = 1 | 2 | 3 | 4 | 5 | 6
 
@@ -102,12 +103,12 @@ export function shouldShowHeadingButton(params: {
 }): boolean {
   const { editor, hideWhenUnavailable, headingInSchema } = params
 
-  if (!headingInSchema) {
+  if (!headingInSchema || !editor) {
     return false
   }
 
   if (hideWhenUnavailable) {
-    if (isNodeSelection(editor?.state.selection)) {
+    if (isNodeSelection(editor.state.selection)) {
       return false
     }
   }

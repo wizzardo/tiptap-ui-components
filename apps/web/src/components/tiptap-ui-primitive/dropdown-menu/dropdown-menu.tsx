@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { Placement } from "@floating-ui/react"
 import {
   autoUpdate,
   flip,
@@ -6,7 +7,6 @@ import {
   FloatingList,
   FloatingPortal,
   offset,
-  Placement,
   shift,
   useClick,
   useDismiss,
@@ -19,7 +19,7 @@ import {
   useTypeahead,
 } from "@floating-ui/react"
 import "@/components/tiptap-ui-primitive/dropdown-menu/dropdown-menu.scss"
-import { Separator } from "../separator"
+import { Separator } from "@/components/tiptap-ui-primitive/separator"
 
 interface DropdownMenuOptions {
   initialOpen?: boolean

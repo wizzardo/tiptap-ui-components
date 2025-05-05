@@ -20,7 +20,8 @@ import {
 } from "@/components/tiptap-ui/heading-button/heading-button"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -80,18 +81,18 @@ export function HeadingDropdownMenu({
   const isAnyHeadingActive = editor?.isActive("heading") ?? false
 
   const show = React.useMemo(() => {
-    if (!headingInSchema) {
+    if (!headingInSchema || !editor) {
       return false
     }
 
     if (hideWhenUnavailable) {
-      if (isNodeSelection(editor?.state.selection)) {
+      if (isNodeSelection(editor.state.selection) || !canToggleAnyHeading()) {
         return false
       }
     }
 
     return true
-  }, [headingInSchema, hideWhenUnavailable, editor])
+  }, [headingInSchema, editor, hideWhenUnavailable, canToggleAnyHeading])
 
   if (!show || !editor || !editor.isEditable) {
     return null

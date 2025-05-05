@@ -12,7 +12,8 @@ import { CodeBlockIcon } from "@/components/tiptap-icons/code-block-icon"
 import { isNodeInSchema } from "@/lib/tiptap-utils"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 
 export type NodeType = "codeBlock" | "blockquote"
 
@@ -98,12 +99,12 @@ export function shouldShowNodeButton(params: {
 }): boolean {
   const { editor, hideWhenUnavailable, nodeInSchema, canToggle } = params
 
-  if (!nodeInSchema) {
+  if (!nodeInSchema || !editor) {
     return false
   }
 
   if (hideWhenUnavailable) {
-    if (isNodeSelection(editor?.state.selection) || !canToggle) {
+    if (isNodeSelection(editor.state.selection) || !canToggle) {
       return false
     }
   }

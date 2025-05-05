@@ -111,7 +111,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {children}
         </TooltipTrigger>
         <TooltipContent>
-          <span>{tooltip}</span>
+          {tooltip}
           <ShortcutDisplay shortcuts={shortcuts} />
         </TooltipContent>
       </Tooltip>

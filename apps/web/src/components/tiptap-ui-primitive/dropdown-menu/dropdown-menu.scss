@@ -2,11 +2,13 @@
   --tt-popover-bg-color: var(--white);
   --tt-popover-border-color: var(--tt-gray-light-a-100);
   --tt-popover-text-color: var(--tt-gray-light-a-600);
+  --tt-popover-label: var(--tt-gray-light-a-400);
 
   .dark & {
     --tt-popover-border-color: var(--tt-gray-dark-a-50);
     --tt-popover-bg-color: var(--tt-gray-dark-50);
     --tt-popover-text-color: var(--tt-gray-dark-a-600);
+    --tt-popover-label: var(--tt-gray-dark-a-400);
   }
 }
 
@@ -36,6 +38,15 @@
 
   .tiptap-dropdown-menu-separator {
     margin: 0.25rem 0;
+  }
+
+  .tiptap-dropdown-menu-label {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--tt-popover-label);
   }
 
   /* Animation states */
