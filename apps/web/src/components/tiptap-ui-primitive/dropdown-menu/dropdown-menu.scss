@@ -29,7 +29,7 @@
   color: var(--tt-popover-text-color);
   box-shadow: var(--tt-shadow-elevated-md);
   outline: none;
-  overflow: hidden;
+  overflow: auto;
   gap: 0.25rem;
 
   button {

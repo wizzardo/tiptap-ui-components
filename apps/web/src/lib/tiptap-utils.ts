@@ -95,12 +95,26 @@ export function findNodePosition(props: {
     return null
   }
 
+  if (hasValidPos) {
+    try {
+      const nodeAtPos = editor.state.doc.nodeAt(nodePos!)
+      if (nodeAtPos) {
+        return { pos: nodePos!, node: nodeAtPos }
+      }
+    } catch (error) {
+      console.error("Error checking node at position:", error)
+      return null
+    }
+  }
+
+  // Otherwise search for the node in the document
   let foundPos = -1
   let foundNode: Node | null = null
 
   editor.state.doc.descendants((currentNode, pos) => {
+    // TODO: Needed?
+    // if (currentNode.type && currentNode.type.name === node!.type.name) {
     if (currentNode === node) {
-      // if (currentNode.type && currentNode.type.name === node!.type.name) {
       foundPos = pos
       foundNode = currentNode
       return false
