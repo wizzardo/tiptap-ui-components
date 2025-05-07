@@ -23,6 +23,7 @@ import {
   DEFAULT_TIPTAP_NODES,
   DEFAULT_TIPTAP_UI,
   DEFAULT_TIPTAP_UI_PRIMITIVES,
+  DEFAULT_TIPTAP_UI_UTILS,
   getConfig,
   rawConfigSchema,
   resolveConfigPaths,
@@ -218,6 +219,7 @@ async function promptForConfig(defaultConfig: Config | null = null) {
       tiptapNodes: DEFAULT_TIPTAP_NODES,
       tiptapUi: DEFAULT_TIPTAP_UI,
       tiptapUiPrimitives: DEFAULT_TIPTAP_UI_PRIMITIVES,
+      tiptapUiUtils: DEFAULT_TIPTAP_UI_UTILS,
       styles: DEFAULT_STYLES,
     },
   })

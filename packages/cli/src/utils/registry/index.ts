@@ -273,6 +273,7 @@ export function getRegistryTypeAliasMap() {
   return new Map<string, string>([
     ["registry:ui", "tiptapUi"],
     ["registry:ui-primitive", "tiptapUiPrimitives"],
+    ["registry:ui-utils", "tiptapUiUtils"],
     ["registry:extension", "tiptapExtensions"],
     ["registry:node", "tiptapNodes"],
     ["registry:context", "contexts"],

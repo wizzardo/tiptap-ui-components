@@ -27,6 +27,7 @@ interface CategoryMap {
   templates: RegistryItemIndexSchema
   ui: RegistryItemIndexSchema
   primitives: RegistryItemIndexSchema
+  uiUtils: RegistryItemIndexSchema
   nodes: RegistryItemIndexSchema
 }
 
@@ -122,6 +123,9 @@ const categorizeRegistryItems = (
     ui: registryIndex.filter((entry) => entry.type === "registry:ui"),
     primitives: registryIndex.filter(
       (entry) => entry.type === "registry:ui-primitive"
+    ),
+    uiUtils: registryIndex.filter(
+      (entry) => entry.type === "registry:ui-utils"
     ),
     nodes: registryIndex.filter((entry) => entry.type === "registry:node"),
   }

@@ -315,6 +315,10 @@ export function resolveFileTargetDirectory(
     return config.resolvedPaths.tiptapUiPrimitives
   }
 
+  if (file.type === "registry:ui-utils") {
+    return config.resolvedPaths.tiptapUiUtils
+  }
+
   if (file.type === "registry:extension") {
     return config.resolvedPaths.tiptapExtensions
   }
