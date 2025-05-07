@@ -119,6 +119,16 @@ function updateImportAliases(moduleSpecifier: string, config: Config): string {
   }
 
   if (
+    config.aliases.tiptapUiUtils &&
+    moduleSpecifier.match(/@\/registry\/tiptap-ui-utils/)
+  ) {
+    return moduleSpecifier.replace(
+      /@\/registry\/tiptap-ui-utils/,
+      config.aliases.tiptapUiUtils
+    )
+  }
+
+  if (
     config.aliases.tiptapUi &&
     moduleSpecifier.match(/@\/registry\/tiptap-ui/)
   ) {

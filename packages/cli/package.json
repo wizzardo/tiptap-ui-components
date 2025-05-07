@@ -1,6 +1,6 @@
 {
   "name": "@tiptap/cli",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "Tiptap CLI",
   "publishConfig": {
     "access": "public"
@@ -60,7 +60,6 @@
     "fs-extra": "^11.3.0",
     "https-proxy-agent": "^7.0.6",
     "jsonc-parser": "^3.3.1",
-    "kleur": "^4.1.5",
     "node-fetch": "^3.3.2",
     "ora": "^8.2.0",
     "recast": "^0.23.11",
@@ -68,7 +67,7 @@
     "tsconfig-paths": "^4.2.0",
     "yaml": "^2.7.1",
     "yoctocolors-cjs": "^2.1.2",
-    "zod": "^3.24.2"
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@babel/plugin-transform-typescript": "^7.26.5",
@@ -76,6 +75,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/prompts": "^2.4.9",
     "tsup": "^8.4.0",
-    "type-fest": "^4.39.1"
+    "type-fest": "^4.40.0"
   }
 }

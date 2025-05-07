@@ -5,7 +5,6 @@ import { Config } from "@/src/utils/get-config"
 import { transformImport } from "@/src/utils/transformers/transform-import"
 import { transformJsx } from "@/src/utils/transformers/transform-jsx"
 import { transformRsc } from "@/src/utils/transformers/transform-rsc"
-import { transformEnvVars } from "@/src/utils/transformers/transform-env-vars"
 import { Project, ScriptKind, type SourceFile } from "ts-morph"
 
 export type TransformOpts = {
@@ -32,12 +31,16 @@ async function createTempSourceFile(filename: string) {
 
 export async function transform(
   opts: TransformOpts,
-  transformers: Transformer[] = [
-    transformImport,
-    transformRsc,
-    transformEnvVars,
-  ]
+  transformers: Transformer[] = [transformImport, transformRsc]
 ) {
+  if (
+    opts.filename.endsWith(".scss") ||
+    opts.filename.endsWith(".css") ||
+    opts.filename.endsWith(".json")
+  ) {
+    return opts.raw
+  }
+
   const tempFile = await createTempSourceFile(opts.filename)
   const sourceFile = project.createSourceFile(tempFile, opts.raw, {
     scriptKind: ScriptKind.TSX,

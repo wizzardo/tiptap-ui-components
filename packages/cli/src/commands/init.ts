@@ -9,7 +9,6 @@ import { FRAMEWORKS, createProject } from "@/src/utils/create-project"
 import * as ERRORS from "@/src/utils/errors"
 import { colors } from "@/src/utils/colors"
 import { handleError } from "@/src/utils/handle-error"
-import { highlighter } from "@/src/utils/highlighter"
 import { logger } from "@/src/utils/logger"
 import { addComponents } from "@/src/utils/add-components"
 import { getProjectConfig, getProjectInfo } from "@/src/utils/get-project-info"
@@ -24,11 +23,13 @@ import {
   DEFAULT_TIPTAP_NODES,
   DEFAULT_TIPTAP_UI,
   DEFAULT_TIPTAP_UI_PRIMITIVES,
+  DEFAULT_TIPTAP_UI_UTILS,
   getConfig,
   rawConfigSchema,
   resolveConfigPaths,
   type Config,
 } from "@/src/utils/get-config"
+import chalk from "chalk"
 
 export const initOptionsSchema = z.object({
   cwd: z.string(),
@@ -53,16 +54,12 @@ type InitOptions = z.infer<typeof initOptionsSchema> & {
  */
 const createThemedConfirm = (message: string, defaultValue: boolean = true) => {
   return confirm({
-    message: colors.white(message),
+    message,
     default: defaultValue,
     theme: {
       prefix: {
         done: colors.cyan("✔"),
-        idle: colors.white("?"),
-      },
-      style: {
-        answer: (text: string) => colors.white(text),
-        message: (text: string) => colors.white(text),
+        idle: "?",
       },
     },
   })
@@ -78,7 +75,7 @@ export const init = new Command()
   .option("-f, --framework <framework>", "the framework to use. (next, vite)")
   .option(
     "-c, --cwd <cwd>",
-    "the working directory. defaults to the current directory.",
+    "the working directory. Defaults to the current directory.",
     process.cwd()
   )
   .option("-s, --silent", "mute output.", false)
@@ -97,7 +94,9 @@ export const init = new Command()
       })
       await runInit(options)
       logger.log(
-        `${highlighter.success("Success!")} Project initialization completed.`
+        chalk.bold(
+          `${colors.cyan("Success!")} Project initialization completed.`
+        )
       )
       logger.break()
     } catch (error) {
@@ -163,10 +162,14 @@ export async function runInit(options: InitOptions) {
       process.exit(0)
     }
 
-    selectedComponents = await promptForRegistryComponents({
-      ...updatedOptions,
-      overwrite: false,
-    })
+    selectedComponents = await promptForRegistryComponents(
+      {
+        ...updatedOptions,
+        overwrite: false,
+      },
+      // Do not sbow divider
+      false
+    )
 
     // Exit if still no components selected
     if (!selectedComponents.length) {
@@ -216,6 +219,7 @@ async function promptForConfig(defaultConfig: Config | null = null) {
       tiptapNodes: DEFAULT_TIPTAP_NODES,
       tiptapUi: DEFAULT_TIPTAP_UI,
       tiptapUiPrimitives: DEFAULT_TIPTAP_UI_PRIMITIVES,
+      tiptapUiUtils: DEFAULT_TIPTAP_UI_UTILS,
       styles: DEFAULT_STYLES,
     },
   })

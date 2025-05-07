@@ -15,6 +15,7 @@ export const DEFAULT_TIPTAP_EXTENSIONS = "@/components/tiptap-extension"
 export const DEFAULT_TIPTAP_NODES = "@/components/tiptap-node"
 export const DEFAULT_TIPTAP_UI = "@/components/tiptap-ui"
 export const DEFAULT_TIPTAP_UI_PRIMITIVES = "@/components/tiptap-ui-primitive"
+export const DEFAULT_TIPTAP_UI_UTILS = "@/components/tiptap-ui-utils"
 export const DEFAULT_STYLES = "@/styles"
 
 const explorer = cosmiconfig("components", {
@@ -34,6 +35,7 @@ export const rawConfigSchema = z.object({
     tiptapNodes: z.string().optional(),
     tiptapUi: z.string().optional(),
     tiptapUiPrimitives: z.string().optional(),
+    tiptapUiUtils: z.string().optional(),
     styles: z.string().optional(),
   }),
 })
@@ -50,6 +52,7 @@ export const configSchema = rawConfigSchema.extend({
     tiptapNodes: z.string(),
     tiptapUi: z.string(),
     tiptapUiPrimitives: z.string(),
+    tiptapUiUtils: z.string(),
     styles: z.string(),
   }),
 })
@@ -79,6 +82,7 @@ export async function getConfig(cwd: string) {
         tiptapNodes: DEFAULT_TIPTAP_NODES,
         tiptapUi: DEFAULT_TIPTAP_UI,
         tiptapUiPrimitives: DEFAULT_TIPTAP_UI_PRIMITIVES,
+        tiptapUiUtils: DEFAULT_TIPTAP_UI_UTILS,
         styles: DEFAULT_STYLES,
       },
     })
@@ -97,6 +101,7 @@ export async function getConfig(cwd: string) {
       tiptapUi: config.aliases.tiptapUi ?? DEFAULT_TIPTAP_UI,
       tiptapUiPrimitives:
         config.aliases.tiptapUiPrimitives ?? DEFAULT_TIPTAP_UI_PRIMITIVES,
+      tiptapUiUtils: config.aliases.tiptapUiUtils ?? DEFAULT_TIPTAP_UI_UTILS,
       styles: config.aliases.styles ?? DEFAULT_STYLES,
     }
   }
@@ -170,6 +175,12 @@ export async function resolveConfigPaths(cwd: string, config: RawConfig) {
         : path.resolve(
             (await resolveImport(config.aliases.components, tsConfig)) ?? cwd,
             "tiptap-ui-primitive"
+          ),
+      tiptapUiUtils: config.aliases.tiptapUiUtils
+        ? await resolveImport(config.aliases.tiptapUiUtils, tsConfig)
+        : path.resolve(
+            (await resolveImport(config.aliases.components, tsConfig)) ?? cwd,
+            "tiptap-ui-utils"
           ),
       styles: config.aliases.styles
         ? await resolveImport(config.aliases.styles, tsConfig)

@@ -2,10 +2,10 @@ import path from "path"
 import { addOptionsSchema } from "@/src/commands/add"
 import * as ERRORS from "@/src/utils/errors"
 import { getConfig } from "@/src/utils/get-config"
-import { highlighter } from "@/src/utils/highlighter"
 import { logger } from "@/src/utils/logger"
 import fs from "fs-extra"
 import { z } from "zod"
+import { colors } from "@/src/utils/colors"
 
 export async function preFlightAdd(options: z.infer<typeof addOptionsSchema>) {
   const errors: Record<string, boolean> = {}
@@ -33,15 +33,10 @@ export async function preFlightAdd(options: z.infer<typeof addOptionsSchema>) {
 
     logger.break()
     logger.error(
-      `An invalid ${highlighter.info(
-        "components.json"
-      )} file was found at ${highlighter.info(
-        options.cwd
-      )}.\nBefore you can add components, you must create a valid ${highlighter.info(
-        "components.json"
-      )} file by running the ${highlighter.info("init")} command.`
+      `Make sure you are in a valid project directory. Run ${colors.cyan(
+        "npx @tiptap/cli init"
+      )} to create a new project.`
     )
-    logger.error(`Learn more at ${highlighter.info("link-here")}.`)
     logger.break()
     process.exit(0)
   }

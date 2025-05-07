@@ -164,6 +164,16 @@ async function addWorkspaceComponents(
       rootSpinner,
     })
 
+    if (files.errors && files.errors.length > 0) {
+      spinner(`Encountered ${files.errors.length} errors:`, {
+        silent: options.silent,
+      })?.fail()
+
+      for (const { file, error } of files.errors) {
+        logger.error(`  - ${file}: ${error}`)
+      }
+    }
+
     filesCreated.push(
       ...files.filesCreated.map((file) =>
         path.relative(workspaceRoot, path.join(packageRoot, file))
