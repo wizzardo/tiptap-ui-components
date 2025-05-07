@@ -61,6 +61,7 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 // --- Hooks ---
 import { useMobile } from "@/hooks/use-mobile"
 import { useWindowSize } from "@/hooks/use-window-size"
+import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 
 // --- Components ---
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
@@ -180,33 +181,7 @@ export function SimpleEditor() {
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
   >("main")
-  const [rect, setRect] = React.useState<
-    Pick<DOMRect, "x" | "y" | "width" | "height">
-  >({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  })
   const toolbarRef = React.useRef<HTMLDivElement>(null)
-
-  React.useEffect(() => {
-    const updateRect = () => {
-      setRect(document.body.getBoundingClientRect())
-    }
-
-    updateRect()
-
-    const resizeObserver = new ResizeObserver(updateRect)
-    resizeObserver.observe(document.body)
-
-    window.addEventListener("scroll", updateRect)
-
-    return () => {
-      resizeObserver.disconnect()
-      window.removeEventListener("scroll", updateRect)
-    }
-  }, [])
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -244,38 +219,10 @@ export function SimpleEditor() {
     content: content,
   })
 
-  React.useEffect(() => {
-    const checkCursorVisibility = () => {
-      if (!editor || !toolbarRef.current) return
-
-      const { state, view } = editor
-      if (!view.hasFocus()) return
-
-      const { from } = state.selection
-      const cursorCoords = view.coordsAtPos(from)
-
-      if (windowSize.height < rect.height) {
-        if (cursorCoords && toolbarRef.current) {
-          const toolbarHeight =
-            toolbarRef.current.getBoundingClientRect().height
-          const isEnoughSpace =
-            windowSize.height - cursorCoords.top - toolbarHeight > 0
-
-          // If not enough space, scroll until the cursor is the middle of the screen
-          if (!isEnoughSpace) {
-            const scrollY =
-              cursorCoords.top - windowSize.height / 2 + toolbarHeight
-            window.scrollTo({
-              top: scrollY,
-              behavior: "smooth",
-            })
-          }
-        }
-      }
-    }
-
-    checkCursorVisibility()
-  }, [editor, rect.height, windowSize.height])
+  const bodyRect = useCursorVisibility({
+    editor,
+    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
+  })
 
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
@@ -290,7 +237,7 @@ export function SimpleEditor() {
         style={
           isMobile
             ? {
-                bottom: `calc(100% - ${windowSize.height - rect.y}px)`,
+                bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
               }
             : {}
         }

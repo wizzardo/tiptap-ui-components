@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { isNodeSelection, type Editor } from "@tiptap/react"
 
