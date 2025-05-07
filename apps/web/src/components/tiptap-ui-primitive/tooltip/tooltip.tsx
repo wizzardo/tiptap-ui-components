@@ -157,19 +157,25 @@ export const TooltipTrigger = React.forwardRef<
   const context = useTooltipContext()
   const childrenRef = React.isValidElement(children)
     ? parseInt(React.version, 10) >= 19
-      ? (children.props as any).ref
-      : (children as any).ref
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (children as { props: { ref?: React.Ref<any> } }).props.ref
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (children as any).ref
     : undefined
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef])
 
   if (asChild && React.isValidElement(children)) {
+    const dataAttributes = {
+      "data-tooltip-state": context.open ? "open" : "closed",
+    }
+
     return React.cloneElement(
       children,
       context.getReferenceProps({
         ref,
         ...props,
-        ...(children.props as any),
-        "data-tooltip-state": context.open ? "open" : "closed",
+        ...(typeof children.props === "object" ? children.props : {}),
+        ...dataAttributes,
       })
     )
   }

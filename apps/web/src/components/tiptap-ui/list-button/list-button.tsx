@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { isNodeSelection, type Editor } from "@tiptap/react"
 
@@ -15,7 +13,8 @@ import { ListTodoIcon } from "@/components/tiptap-icons/list-todo-icon"
 import { isNodeInSchema } from "@/lib/tiptap-utils"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 
 export type ListType = "bulletList" | "orderedList" | "taskList"
 
@@ -129,13 +128,13 @@ export function shouldShowListButton(params: {
 }): boolean {
   const { editor, type, hideWhenUnavailable, listInSchema } = params
 
-  if (!listInSchema) {
+  if (!listInSchema || !editor) {
     return false
   }
 
   if (hideWhenUnavailable) {
     if (
-      isNodeSelection(editor?.state.selection) &&
+      isNodeSelection(editor.state.selection) ||
       !canToggleList(editor, type)
     ) {
       return false

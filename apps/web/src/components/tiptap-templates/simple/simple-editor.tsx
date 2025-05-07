@@ -61,6 +61,7 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 // --- Hooks ---
 import { useMobile } from "@/hooks/use-mobile"
 import { useWindowSize } from "@/hooks/use-window-size"
+import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 
 // --- Components ---
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
@@ -180,11 +181,7 @@ export function SimpleEditor() {
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
   >("main")
-  const [rect, setRect] = React.useState({ y: 0 })
-
-  React.useEffect(() => {
-    setRect(document.body.getBoundingClientRect())
-  }, [])
+  const toolbarRef = React.useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -222,6 +219,11 @@ export function SimpleEditor() {
     content: content,
   })
 
+  const bodyRect = useCursorVisibility({
+    editor,
+    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
+  })
+
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
       setMobileView("main")
@@ -231,10 +233,11 @@ export function SimpleEditor() {
   return (
     <EditorContext.Provider value={{ editor }}>
       <Toolbar
+        ref={toolbarRef}
         style={
           isMobile
             ? {
-                bottom: `calc(100% - ${windowSize.height - rect.y}px)`,
+                bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
               }
             : {}
         }

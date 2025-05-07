@@ -5,18 +5,6 @@
   --thread-text: var(--tt-gray-light-900);
   --placeholder-color: var(--tt-gray-light-a-400);
 
-  // Highlight variables
-  --tt-highlight-green: #dcfce7;
-  --tt-highlight-green-contrast: #c7fad8;
-  --tt-highlight-blue: #e0f2fe;
-  --tt-highlight-blue-contrast: #ceeafd;
-  --tt-highlight-red: #ffe4e6;
-  --tt-highlight-red-contrast: #ffccd0;
-  --tt-highlight-purple: #f3e8ff;
-  --tt-highlight-purple-contrast: #e4ccff;
-  --tt-highlight-yellow: #fef9c3;
-  --tt-highlight-yellow-contrast: #fbe604;
-
   // Mathematics variables
   --tiptap-mathematics-bg-color: var(--tt-gray-light-a-200);
   --tiptap-mathematics-border-color: var(--tt-brand-color-500);
@@ -27,17 +15,6 @@
     --separator-color: var(--tt-gray-dark-a-200);
     --thread-text: var(--tt-gray-dark-900);
     --placeholder-color: var(--tt-gray-dark-a-400);
-
-    --tt-highlight-green: #509568;
-    --tt-highlight-green-contrast: #47855d;
-    --tt-highlight-blue: #6e92aa;
-    --tt-highlight-blue-contrast: #5e86a1;
-    --tt-highlight-red: #743e42;
-    --tt-highlight-red-contrast: #643539;
-    --tt-highlight-purple: #583e74;
-    --tt-highlight-purple-contrast: #4c3564;
-    --tt-highlight-yellow: #6b6524;
-    --tt-highlight-yellow-contrast: #58531e;
 
     --tiptap-mathematics-bg-color: var(--tt-gray-dark-a-200);
     --tiptap-mathematics-border-color: var(--tt-brand-color-400);
@@ -399,4 +376,26 @@
     border-radius: var(--tt-radius-xs);
     display: inline-block;
   }
+}
+
+/* =====================
+     PLACEHOLDER
+     ===================== */
+.is-empty[data-placeholder]:has(
+    > .ProseMirror-trailingBreak:only-child
+  )::before {
+  content: "Write, type '/' for commands…";
+}
+
+.is-empty[data-placeholder]:has(
+    > .ProseMirror-trailingBreak:only-child
+  ):before {
+  pointer-events: none;
+  height: 0;
+  position: absolute;
+  font-style: italic;
+}
+
+.is-empty[data-placeholder]:has(> .ProseMirror-trailingBreak):before {
+  color: var(--placeholder-color);
 }

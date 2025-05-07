@@ -14,7 +14,8 @@ import { TrashIcon } from "@/components/tiptap-icons/trash-icon"
 import { isMarkInSchema } from "@/lib/tiptap-utils"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 import {
   Popover,
   PopoverContent,
@@ -284,12 +285,12 @@ export function LinkPopover({
   )
 
   const show = React.useMemo(() => {
-    if (!linkInSchema) {
+    if (!linkInSchema || !editor) {
       return false
     }
 
     if (hideWhenUnavailable) {
-      if (isNodeSelection(editor?.state.selection) || !canSetLink) {
+      if (isNodeSelection(editor.state.selection) || !canSetLink) {
         return false
       }
     }

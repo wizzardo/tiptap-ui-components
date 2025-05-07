@@ -21,7 +21,8 @@ import {
 } from "@/components/tiptap-ui/list-button/list-button"
 
 // --- UI Primitives ---
-import { Button, ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -80,12 +81,12 @@ export function shouldShowListDropdown(params: {
 }): boolean {
   const { editor, hideWhenUnavailable, listInSchema, canToggleAny } = params
 
-  if (!listInSchema) {
+  if (!listInSchema || !editor) {
     return false
   }
 
   if (hideWhenUnavailable) {
-    if (isNodeSelection(editor?.state.selection) && !canToggleAny) {
+    if (isNodeSelection(editor.state.selection) || !canToggleAny) {
       return false
     }
   }
