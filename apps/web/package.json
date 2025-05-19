@@ -32,8 +32,10 @@
   },
   "scripts": {
     "dev": "vite --clearScreen false",
-    "build": "tsc && vite build && node scripts/copy-scss.js && node scripts/replace-empty-css.js",
+    "build": "rm -rf dist && node scripts/copy-ts.js && node scripts/copy-scss.js",
+    "build-js": "tsc && vite build && node scripts/copy-scss.js && node scripts/replace-empty-css.js",
     "copy-scss": "node scripts/copy-scss.js",
+    "copy-ts": "node scripts/copy-ts.js",
     "replace-empty-css": "node scripts/replace-empty-css.js",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.ts\""
